@@ -35,6 +35,7 @@ MONITOR_TABLES = [core.Chassis.table_name, core.Publisher.table_name]
 
 def pack_message(message):
     data = None
+    LOG.error("TFFF packing message: {}".format(message))
     try:
         data = msgpack.packb(message, encoding='utf-8')
     except Exception:
@@ -44,6 +45,7 @@ def pack_message(message):
 
 def unpack_message(message):
     entry = None
+    LOG.error("TFFF unpacking message: {}".format(message))
     try:
         entry = msgpack.unpackb(message, encoding='utf-8')
     except Exception:
@@ -143,8 +145,7 @@ class PublisherAgentBase(PublisherApi):
 
         LOG.debug("Sending %s to %s", update, topic)
 
-        # data = pack_message(update.to_dict())
-        data = update.to_dict()
+        data = pack_message(update.to_dict())
         self._send_event(data, topic)
 
 

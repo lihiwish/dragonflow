@@ -55,7 +55,7 @@ class PubSubTestBase(test_base.DFTestBase):
         subscriber.register_topic(db_common.SEND_ALL_TOPIC)
         uri = '%s://%s:%s' % (
             cfg.CONF.df.publisher_transport,
-            '127.0.0.1',
+            cfg.CONF.host,
             cfg.CONF.df.publisher_port
         )
         subscriber.register_listen_address(uri)
@@ -211,6 +211,7 @@ class TestPubSub(PubSubTestBase):
         self.events_action_t = None
 
         def _db_change_callback_topic(table, key, action, value, topic):
+            print(" in db change callback - mocked. table={}. key={}".format(table, key))
             if 'log' == key:
                 self.events_num_t += 1
                 self.events_action_t = action
