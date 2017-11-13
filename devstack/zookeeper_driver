@@ -28,34 +28,20 @@ function nb_db_driver_install_server {
     if is_service_enabled df-zookeeper-server ; then
         _zookeeper_env
         echo "Installing Zookeeper server"
+        ZOOKEEPER_CONF_DIR="${ZOOKEEPER_DIR}"
+        ZOOKEEPER_CONF_FILE="${ZOOKEEPER_CONF_DIR}/zoo.cfg"
+        ZOOKEEPER_CONF_SAMPLE_FILE="${ZOOKEEPER_CONF_DIR}/zoo_sample.cfg"
+        sudo mkdir -p $ZOOKEEPER_DATA_DIR
+        sudo mkdir -p $ZOOKEEPER_LOG_DIR
+        sudo mkdir -p $ZOOKEEPER_CONF_DIR
         if is_ubuntu; then
-            ZOOKEEPER_CONF_DIR="${ZOOKEEPER_DIR}/conf"
-            ZOOKEEPER_CONF_FILE="${ZOOKEEPER_CONF_DIR}/zoo.cfg"
-            ZOOKEEPER_CONF_SAMPLE_DIR="/etc/zookeeper/conf_example"
-            sudo mkdir -p $ZOOKEEPER_DATA_DIR
-            sudo mkdir -p $ZOOKEEPER_LOG_DIR
-            sudo mkdir -p $ZOOKEEPER_CONF_DIR
             install_package zookeeperd
-            stop_service zookeeper
-            if [ $UBUNTU_RELEASE_BASE_NUM -ge 16 ] ; then
-                sudo cp $DEST/dragonflow/devstack/zookeeper.service.ubuntu /etc/systemd/system/zookeeper.service
-                sudo systemctl daemon-reload
-            fi
-            if [ -d $ZOOKEEPER_CONF_SAMPLE_DIR ] ; then
-                sudo cp $ZOOKEEPER_CONF_SAMPLE_DIR/* $ZOOKEEPER_CONF_DIR/ -rf
-            fi
         elif is_fedora; then
-            ZOOKEEPER_CONF_DIR="${ZOOKEEPER_DIR}"
-            ZOOKEEPER_CONF_FILE="${ZOOKEEPER_CONF_DIR}/zoo.cfg"
-            ZOOKEEPER_CONF_SAMPLE_FILE="${ZOOKEEPER_CONF_DIR}/zoo_sample.cfg"
-            sudo mkdir -p $ZOOKEEPER_DATA_DIR
-            sudo mkdir -p $ZOOKEEPER_LOG_DIR
-            sudo mkdir -p $ZOOKEEPER_CONF_DIR
             install_package zookeeper
-            sudo cp $ZOOKEEPER_CONF_SAMPLE_FILE $ZOOKEEPER_CONF_FILE
         else
             die $LINENO "Other distributions are not supported"
         fi
+        sudo cp $ZOOKEEPER_CONF_SAMPLE_FILE $ZOOKEEPER_CONF_FILE
 
         echo "Configuring Zookeeper"
         if [ -f $ZOOKEEPER_CONF_FILE ] ; then
