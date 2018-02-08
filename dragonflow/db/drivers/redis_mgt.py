@@ -179,6 +179,9 @@ class RedisMgt(object):
             if ip_port.startswith(':'):
                 ip_port = "127.0.0.1" + ip_port
 
+            if ip_port.find("@") != -1:
+                ip_port = ip_port.split("@")[0]
+
             ret[ip_port] = {
                 'node_id': node_id,
                 'role': role,
