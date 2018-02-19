@@ -184,6 +184,14 @@ function configure_df_metadata_service {
     fi
 }
 
+function configure_df_dns_service {
+    if is_service_enabled df-dns ; then
+        iniset $DRAGONFLOW_CONF df_dns ip "$DF_DNS_SERVICE_IP"
+        iniset $DRAGONFLOW_CONF df_dns port "$DF_DNS_SERVICE_PORT"
+        iniset $DRAGONFLOW_CONF df_dns dns_interface "$DF_DNS_SERVICE_INTERFACE"
+    fi
+}
+
 function configure_qos {
     Q_SERVICE_PLUGIN_CLASSES+=",qos"
     Q_ML2_PLUGIN_EXT_DRIVERS+=",qos"
@@ -305,6 +313,7 @@ function configure_df_plugin {
     iniset $DRAGONFLOW_CONF df enable_selective_topology_distribution \
                             "$DF_SELECTIVE_TOPO_DIST"
     configure_df_metadata_service
+    configure_df_dns_service
 }
 
 function install_zeromq {
@@ -492,6 +501,13 @@ function start_df_bgp_service {
     fi
 }
 
+function start_df_dns_service {
+    if is_service_enabled df-dns; then
+        echo "Starting Dragonflow DNS serviece"
+        run_process df-dns "$DF_DNS_SERVICE --config-file $NEUTRON_CONF --config-file $DRAGONFLOW_CONF"
+    fi
+}
+
 function setup_rootwrap_filters {
     if [[ "$DF_INSTALL_DEBUG_ROOTWRAP_CONF" == "True" ]]; then
         echo "Adding rootwrap filters"
@@ -567,6 +583,7 @@ function handle_df_stack_post_install {
     start_df
     start_df_metadata_agent
     start_df_bgp_service
+    start_df_dns_service
     setup_rootwrap_filters
     create_tables_script
 }
