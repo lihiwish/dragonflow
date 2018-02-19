@@ -18,6 +18,7 @@ from dragonflow.conf import df_cassandra
 from dragonflow.conf import df_common_params
 from dragonflow.conf import df_dhcp
 from dragonflow.conf import df_dnat
+from dragonflow.conf import df_dns_service
 from dragonflow.conf import df_l2
 from dragonflow.conf import df_l3
 from dragonflow.conf import df_loadbalancer
@@ -33,6 +34,7 @@ CONF = cfg.CONF
 df_cassandra.register_opts()
 df_common_params.register_opts()
 df_dhcp.register_opts()
+df_dns_service.register_opts()
 df_loadbalancer.register_opts()
 df_metadata_service.register_opts()
 df_active_port_detection.register_opts()
