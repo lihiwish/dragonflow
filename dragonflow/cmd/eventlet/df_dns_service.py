@@ -54,10 +54,10 @@ def environment_setup():
     utils.execute(cmd, run_as_root=True)
 
     cmd = ["ip", "route", "add", "0.0.0.0/0", "dev", interface,
-           "table", dns_ROUTE_TABLE_ID]
+           "table", DNS_ROUTE_TABLE_ID]
     utils.execute(cmd, run_as_root=True)
 
-    # cmd = ["ip", "rule", "add", "from", ip, "table", dns_ROUTE_TABLE_ID]
+    # cmd = ["ip", "rule", "add", "from", ip, "table", DNS_ROUTE_TABLE_ID]
     # utils.execute(cmd, run_as_root=True)
 
     cmd = ["iptables", '-I', 'INPUT', '-i', interface, '-p', 'tcp', '--dport',
@@ -72,7 +72,7 @@ def environment_destroy():
     utils.execute(cmd, run_as_root=True, check_exit_code=[0])
 
     # ip = cfg.CONF.df_dns.ip
-    # cmd = ["ip", "rule", "del", "from", ip, "table", dns_ROUTE_TABLE_ID]
+    # cmd = ["ip", "rule", "del", "from", ip, "table", DNS_ROUTE_TABLE_ID]
     # utils.execute(cmd, run_as_root=True)
 
 
