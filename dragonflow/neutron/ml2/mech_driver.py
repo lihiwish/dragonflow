@@ -299,6 +299,8 @@ class DFMechDriver(api.MechanismDriver):
         subnet = context.current
         network = context.network.current
         net_id = subnet['network_id']
+        LOG.warning("roffy creating subnet: subnet={}".format(subnet))
+        LOG.warning("roffy creating subnet: network={}".format(network))
         df_subnet = neutron_l2.subnet_from_neutron_subnet(subnet)
         self.nb_api.create(df_subnet)
         topic = df_utils.get_obj_topic(network)
