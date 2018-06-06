@@ -203,7 +203,7 @@ def update_object_in_nb_api(json_str, table, op):
     try:
         obj = model_object_from_json(json_str, table)
     except ValueError:
-        print("Record(model) {} was not found".format(json_str))
+        print("Record {} is not valid".format(json_str))
         return
     except TypeError:
         print("Json(model) {} is not applicable to {}".format(json_str, table))
@@ -351,7 +351,10 @@ def add_update_command(subparsers):
         if not json_str:
             return
 
-        update_object_in_nb_api(json_str, table, nb_api.update)
+        try:
+            update_object_in_nb_api(json_str, table, nb_api.update)
+        except errors.KeyError:
+            print("Record {} was not found".format(json_str))
 
     sub_parser = subparsers.add_parser(
         'update', help="Update a record in a table",
