@@ -353,7 +353,7 @@ def add_update_command(subparsers):
 
         try:
             update_object_in_nb_api(json_str, table, nb_api.update)
-        except errors.KeyError:
+        except KeyError:
             print("Record {} was not found".format(json_str))
 
     sub_parser = subparsers.add_parser(
