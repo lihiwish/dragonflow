@@ -191,13 +191,13 @@ def model_object_from_json(json_str, model):
     return obj
 
 
-def update_object_in_nb_api(json_str, table, op):
+def update_object_in_nb_api(json_str, table, action_handler):
     """create or update an object that described by json
-     string to dragonflow db, according to the op param.
+     string to dragonflow db, according to the action_handler param.
 
     :param json_str: json string that describes the object to be added
     :param table: table name where object should be added
-    :param op: which method to run on the received json
+    :param action_handler: which method to run on the received json
     :return: None
     """
     try:
@@ -206,15 +206,15 @@ def update_object_in_nb_api(json_str, table, op):
         print("Record {} is not valid".format(json_str))
         return
     except TypeError:
-        print("Json(model) {} is not applicable to {}".format(json_str, table))
+        print("Json {} does not match schema of {}".format(json_str, table))
         return
 
     try:
-        op(obj)
+        action_handler(obj)
     except errors.ValidationError:
-        print("Json(nb_api) {} is not applicable to {}".format(json_str, table))
-    except ValueError:
-        print("Record(nb_api) {} was not found".format(json_str))
+        print("Json {} failed validation for {}".format(json_str, table))
+    # except ValueError:
+    #     print("Record(nb_api) {} was not found".format(json_str))
 
 
 def read_json_from_file(file_path):
@@ -353,7 +353,7 @@ def add_update_command(subparsers):
 
         try:
             update_object_in_nb_api(json_str, table, nb_api.update)
-        except errors.DBKeyNotFound:
+        except df_exceptions.DBKeyNotFound:
             print("Record {} was not found".format(json_str))
 
     sub_parser = subparsers.add_parser(
